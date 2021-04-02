@@ -10,58 +10,65 @@
 #include "stdio.h"
 #include "RGBLedDriver.h"
 
-// static char message[20] = {'\0'};
 #define HEAD 160
 #define TAIL 192
 
-uint8_t status_pos = 0;
-uint8_t RED;
-uint8_t GREEN;
-uint8_t BLU;
-extern Color COLORE;
+static char message[20] = {'\0'};
+uint8_t value;
 
 CY_ISR(Custom_UART_RX_ISR)
 {
     if (UART_ReadRxStatus() == UART_RX_STS_FIFO_NOTEMPTY)
     {
-        // We have some data in the FIFO
-        if (status_pos == 0)
+        value = UART_ReadRxData();
+        status_pos++;
+        
+        
+        /*
+        if (UART_ReadRxData() == HEAD && status_pos == 0)
         {
-            if (UART_ReadRxData() == HEAD )
-            {
-                status_pos = 1;
-            }
+            sprintf(message, "HEAD received: %d\r\n", UART_ReadRxData());
+            UART_PutString(message);
+            sprintf(message, "Write RED hex:\r\n");
+            UART_PutString(message);
+            status_pos++;
         }
-       
         else if (status_pos == 1)
         {
-            RED = UART_ReadRxData();
+            red = UART_ReadRxData();
+            sprintf(message, "RED is: %d\r\n", red);
+            UART_PutString(message);
+            sprintf(message, "Write GREEN hex:\r\n");
+            UART_PutString(message);
             status_pos++;
-            
         }
         else if (status_pos == 2)
         {
-            GREEN = UART_ReadRxData();
+            green = UART_ReadRxData();
+            sprintf(message, "GREEN is: %d\r\n", green);
+            UART_PutString(message);
+            sprintf(message, "Write BLU hex:\r\n");
+            UART_PutString(message);
             status_pos++;
-            
         }
         else if (status_pos == 3)
         {
-            BLU = UART_ReadRxData();
+            blu = UART_ReadRxData();
+            sprintf(message, "BLU is: %d\r\n", blu);
+            UART_PutString(message);
+            sprintf(message, "Write TAIL:\r\n");
+            UART_PutString(message);
             status_pos++;
-            
         }
-        else if (status_pos == 4)
+        else if (UART_ReadRxData() == TAIL && status_pos == 4)
         {   
-            if (UART_ReadRxData() == TAIL) 
-            {
-                Color COLORE = {RED,GREEN,BLU};
-                status_pos = 0;
-            }
+            Color COLORE = {red, green, blu};
+            status_pos = 0;
+            sprintf(message, "Done!\r\n");
+            UART_PutString(message);
         }
-      
+        */
     } 
-    
 }
 
 /* [] END OF FILE */
