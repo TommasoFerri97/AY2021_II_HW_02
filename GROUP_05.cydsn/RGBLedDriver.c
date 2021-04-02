@@ -6,6 +6,10 @@
 */
 
 #include "RGBLedDriver.h"
+#include "InterruptRoutines.h" 
+#include "UART.h"
+#include "stdio.h"
+
 
 static void RGBLed_WriteRed(uint8_t red);
 static void RGBLed_WriteGreen(uint8_t green);

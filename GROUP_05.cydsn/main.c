@@ -20,9 +20,10 @@ int main(void)
     RGBLed_WriteColor(BLACK);
     ISR_UART_StartEx(Custom_UART_RX_ISR);
     
+   
     for(;;)
-    {
-        /* Place your application code here. */
+    {    
+        RGBLed_WriteColor(COLORE); /* Place your application code here. */
     } 
 }
 
