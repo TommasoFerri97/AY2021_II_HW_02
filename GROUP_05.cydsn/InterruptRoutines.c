@@ -12,6 +12,8 @@
 
 extern volatile uint8_t flag_received;
 extern volatile uint8_t value;
+extern volatile int timer_value;
+uint8_t i = 0;
 
 CY_ISR(Custom_UART_RX_ISR)
 {
@@ -20,6 +22,12 @@ CY_ISR(Custom_UART_RX_ISR)
         value = UART_ReadRxData();
         flag_received = 1;
     } 
+}
+
+CY_ISR(Custom_TIMER_RESET)
+{
+    TIMER_RESET_ReadStatusRegister();
+    timer_value++;
 }
 
 /* [] END OF FILE */

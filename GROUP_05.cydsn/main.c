@@ -22,10 +22,14 @@
 #define BLU_CASE 4
 #define COLOR_CASE 5
 #define TIMER_CASE 6
+#define TIMER_END 7
 
 static char message[20] = {'\0'};
 volatile uint8_t flag_received = 0;
 volatile uint8_t value;
+
+volatile int timer_value;
+int set_timer = 5;
 
 uint8_t state = START;
 uint8_t print_message = 0;
@@ -39,7 +43,9 @@ int main(void)
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     RGBLed_Start();
     UART_Start();
+    TIMER_RESET_Start();
     ISR_UART_StartEx(Custom_UART_RX_ISR);
+    ISR_TIMER_StartEx(Custom_TIMER_RESET);
     
     RGBLed_WriteColor(BLACK);
     
@@ -49,17 +55,9 @@ int main(void)
     {   
         switch(state) {
             case START:
-                if (flag_received == 0 && print_message == 0)
-                {
-                    sprintf(message, "Waiting for a color or a command:\n");
-                    UART_PutString(message);
-                    print_message = 1;
-                }
-                
                 if (flag_received == 1)
                 {
-                    print_message = 0;
-                    flag_received = 0;
+                    timer_value = 0;
                     state = HEAD_CASE;
                 }
                 break;
@@ -67,9 +65,8 @@ int main(void)
             case HEAD_CASE:
                 if (value == HEAD)
                 {
-                    sprintf(message, "HEAD received!\n");
-                    UART_PutString(message);
                     flag_received = 0;
+                    timer_value = 0;
                     state = RED_CASE;
                 }
                 else if (value == 'v')
@@ -77,14 +74,22 @@ int main(void)
                     sprintf(message, "RGB LED Program $$$\n");
                     UART_PutString(message);
                     flag_received = 0;
+                    timer_value = 0;
                     state = START;
                 }
                 else if (value == TIMER)
                 {
-                    sprintf(message, "TIMER ready to set!\n");
-                    UART_PutString(message);
                     flag_received = 0;
+                    timer_value = 0;
                     state = TIMER_CASE;
+                }
+                else if (timer_value == set_timer)
+                {
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "RESET\n");
+                    UART_PutString(message);
+                    state = START;
                 }
                 break;
                 
@@ -92,10 +97,17 @@ int main(void)
                 if (flag_received == 1)
                 {
                     red = value;
-                    sprintf(message, "RED is: %d\r\n", red);
-                    UART_PutString(message);
                     flag_received = 0;
+                    timer_value = 0;
                     state = GREEN_CASE;
+                }
+                else if (timer_value == set_timer)
+                {
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "RESET\n");
+                    UART_PutString(message);
+                    state = START;
                 }
                 break;
                 
@@ -103,10 +115,17 @@ int main(void)
                 if (flag_received == 1)
                 {
                     green = value;
-                    sprintf(message, "GREEN is: %d\r\n", green);
-                    UART_PutString(message);
                     flag_received = 0;
+                    timer_value = 0;
                     state = BLU_CASE;
+                }
+                else if (timer_value == set_timer)
+                {
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "RESET\n");
+                    UART_PutString(message);
+                    state = START;
                 }
                 break;
                 
@@ -114,38 +133,76 @@ int main(void)
                 if (flag_received == 1)
                 {
                     blu = value;
-                    sprintf(message, "BLU is: %d\r\n", blu);
-                    UART_PutString(message);
                     flag_received = 0;
+                    timer_value = 0;
                     state = COLOR_CASE;
+                }
+                else if (timer_value == set_timer)
+                {
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "RESET\n");
+                    UART_PutString(message);
+                    state = START;
                 }
                 break;
                 
             case COLOR_CASE:
-                if (flag_received == 1)
-                {   
-                    if (value == TAIL)
-                    {
-                        Color COLORE = {red, green, blu};
-                        sprintf(message, "Done! Color received!\r\n");
-                        UART_PutString(message);
-                        RGBLed_WriteColor(COLORE);
-                        flag_received = 0;
-                        state = START;
-                    }
+                if (value == TAIL && flag_received == 1)
+                {
+                    Color COLORE = {red, green, blu};
+                    RGBLed_WriteColor(COLORE);
+                    flag_received = 0;
+                    timer_value = 0;
+                    state = START;
+                }
+                else if (flag_received == 0 && timer_value == set_timer)
+                {
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "RESET\n");
+                    UART_PutString(message);
+                    state = START;
                 }
                 break;
             
-            /*
             case TIMER_CASE:
                 if (flag_received == 1)
                 {
-                    timer = value;
-                    sprintf(message, "BLU is: %d\r\nWrite TAIL:\r\n", blu);
-                    UART_PutString(message);
+                    set_timer = value;
+                    timer_value = 0;
                     flag_received = 0;
+                    state = TIMER_END;
                 }
-            */
+                else if (timer_value == set_timer)
+                {
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "RESET\n");
+                    UART_PutString(message);
+                    state = START;
+                }
+                break;
+                    
+            case TIMER_END:
+                if (value == TAIL && flag_received == 1)
+                {
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "The new reset time value is: %d\r\n", set_timer);
+                    UART_PutString(message);
+                    state = START;
+                }
+                else if (timer_value == set_timer)
+                {
+                    set_timer = 5;
+                    flag_received = 0;
+                    timer_value = 0;
+                    sprintf(message, "RESET\n");
+                    UART_PutString(message);
+                    state = START;
+                }
+                break;
         }
     } 
 }
