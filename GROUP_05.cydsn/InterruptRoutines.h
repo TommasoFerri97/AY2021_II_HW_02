@@ -10,9 +10,6 @@
     
     #include "project.h"
     
-    extern uint8_t value;
-    extern uint8_t status_pos;
-    
     CY_ISR_PROTO(Custom_UART_RX_ISR);
     
 #endif
