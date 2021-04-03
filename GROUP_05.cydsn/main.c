@@ -11,6 +11,7 @@
 #include "colors.h"
 #include "RGBLedDriver.h"
 
+
 #define HEAD 160
 #define TIMER 161
 #define TAIL 192
@@ -37,7 +38,9 @@ uint8_t red;
 uint8_t green;
 uint8_t blu;
 Color COLORE;
-            
+uint16 timer;     
+
+
 int main(void)
 {
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
@@ -48,7 +51,7 @@ int main(void)
     ISR_TIMER_StartEx(Custom_TIMER_RESET);
     
     RGBLed_WriteColor(BLACK);
-    
+    //ISR_TIMER_StartEx(Custom_TIMER_ISR);
     CyGlobalIntEnable; /* Enable global interrupts. */
     
     for(;;)
@@ -68,6 +71,7 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = RED_CASE;
+                    ISR_TIMER_StartEx(Custom_TIMER_ISR);
                 }
                 else if (value == 'v')
                 {
@@ -100,6 +104,7 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = GREEN_CASE;
+                    ISR_TIMER_StartEx(Custom_TIMER_ISR);
                 }
                 else if (timer_value == set_timer)
                 {
@@ -118,6 +123,7 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = BLU_CASE;
+                    ISR_TIMER_StartEx(Custom_TIMER_ISR);
                 }
                 else if (timer_value == set_timer)
                 {
@@ -136,6 +142,7 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = COLOR_CASE;
+                    ISR_TIMER_StartEx(Custom_TIMER_ISR);
                 }
                 else if (timer_value == set_timer)
                 {
