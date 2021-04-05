@@ -12,6 +12,7 @@
  * ========================================
 */
 
+<<<<<<< HEAD
 
 /* 
  * ========================================
@@ -35,11 +36,16 @@
  *
  * ========================================
 */ 
+=======
+#include "InterruptRoutines.h"
+#include "RGBLedDriver.h"
+#include "UART.h"
+#include "stdio.h"
+>>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
 
 extern volatile uint8_t flag_received;
 extern volatile uint8_t value;
 extern volatile int timer_value;
-uint8_t i = 0;
 
 /* 
  * ========================================
@@ -53,11 +59,17 @@ CY_ISR(Custom_UART_RX_ISR) /* CY_ISR used to define the function declared with C
 {
     if (UART_ReadRxStatus() == UART_RX_STS_FIFO_NOTEMPTY) /* check the data arrival */
     {
+<<<<<<< HEAD
      
             value = UART_ReadRxData(); /* read arrived data from Rx register */
             flag_received = 1; /* flag variable used to regularize byte acquisition in each main state */
         
 } 
+=======
+        value = UART_ReadRxData();
+        flag_received = 1;
+    } 
+>>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
 }
 
 /* 
