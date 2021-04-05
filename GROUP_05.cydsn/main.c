@@ -68,7 +68,6 @@ uint8_t print_message = 0;
 uint8_t red;
 uint8_t green;
 uint8_t blu;
-<<<<<<< HEAD
 Color COLORE;
 uint16 timer;     
 
@@ -79,18 +78,10 @@ uint16 timer;
  *
  * ========================================
 */ 
-
+   
 int main(void)
 {
-    
     /* enabling of peripherals*/
-    
-=======
-Color COLORE;    
-
-int main(void)
-{
->>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
     RGBLed_Start();
     UART_Start();
     TIMER_RESET_Start();
@@ -100,15 +91,12 @@ int main(void)
     /* LEd color initialization */
     
     RGBLed_WriteColor(BLACK);
-<<<<<<< HEAD
+
     
    /* Enable global interrupts */
     
     CyGlobalIntEnable; 
-=======
 
-    CyGlobalIntEnable;
->>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
     
     for(;;)
     {   
@@ -131,10 +119,6 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = RED_CASE;
-<<<<<<< HEAD
-                    
-=======
->>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
                 }
                 else if (value == 'v') /* checked for 'v'; print RGB LED Program $$$ to connect the GUI */
                 {
@@ -169,10 +153,6 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = GREEN_CASE;
-<<<<<<< HEAD
-                  
-=======
->>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
                 }
                 else if (timer_value == set_timer) /* no Red byte inside the timeout window; move back to START */
                 {
@@ -193,10 +173,6 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = BLU_CASE;
-<<<<<<< HEAD
-                   
-=======
->>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
                 }
                 else if (timer_value == set_timer)/* no Green byte inside the timeout window; move back to START */
                 {
@@ -217,10 +193,6 @@ int main(void)
                     flag_received = 0;
                     timer_value = 0;
                     state = COLOR_CASE;
-<<<<<<< HEAD
-                   
-=======
->>>>>>> 4c442696de423044ea2b5faf0955df73cc118785
                 }
                 else if (timer_value == set_timer)/* no Blu byte inside the timeout window; move back to START */
                 {
