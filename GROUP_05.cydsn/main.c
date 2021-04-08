@@ -10,7 +10,7 @@
  * It contains the code to read the serial port input about the color information 
  * with astructure " A0 Red Green Bue C0" and to drive the RGB led;
  * It allaws access to an external GUI thanks to the typing of 'v' char from an external terminal as CoolTerm;
- * it permits the user to change the timeout set up with this command structure " A1 Time C0 ";
+ * it permits the user to change the timeout set up with this command structure " A1 Timeout C0 ";
  * Red, Green, Blu and Timeout needs to be set in hexadecimal;
  *
  * ========================================
@@ -230,14 +230,14 @@ int main(void)
             case TIMER_CASE:
                 if (flag_received == 1)/* read timeout  byte and go to TIMER_END */
                 {
-                    if (value > 0 || value <= 20)
+                    if (value > 0 && value <= 20) /* check if the the timeout value is within the constrains */
                     {
                         set_timer = value;
                         timer_value = 0;
                         flag_received = 0;
                         state = TIMER_END;
                     }
-                    else
+                    else  /* out of bounds; move back to START */
                     {
                         timer_value = 0;
                         flag_received = 0;
