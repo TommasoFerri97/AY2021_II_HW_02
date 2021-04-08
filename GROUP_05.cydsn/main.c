@@ -230,10 +230,21 @@ int main(void)
             case TIMER_CASE:
                 if (flag_received == 1)/* read timeout  byte and go to TIMER_END */
                 {
-                    set_timer = value;
-                    timer_value = 0;
-                    flag_received = 0;
-                    state = TIMER_END;
+                    if (value > 0 || value <= 20)
+                    {
+                        set_timer = value;
+                        timer_value = 0;
+                        flag_received = 0;
+                        state = TIMER_END;
+                    }
+                    else
+                    {
+                        timer_value = 0;
+                        flag_received = 0;
+                        sprintf(message, "Timer value out of bounds\n");
+                        UART_PutString(message);
+                        state = START;
+                    }
                 }
                 else if (timer_value == set_timer)/* no Timeout byte inside the timeout window; move back to START */
                 {
