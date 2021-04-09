@@ -215,7 +215,7 @@ int main(void)
                     timer_value = 0;
                     state = START;
                 }
-                else if (flag_received == 0 && timer_value == set_timer)/* no Tail byte inside the timeout window; move back to START */
+                else if (timer_value == set_timer)/* no Tail byte inside the timeout window; move back to START */
                 {
                     flag_received = 0;
                     timer_value = 0;
