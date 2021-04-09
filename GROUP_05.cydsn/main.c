@@ -222,7 +222,7 @@ int main(void)
                     sprintf(message, "RESET\n");
                     UART_PutString(message);
                     state = START;
-                }
+                }              
             break;
                 
         /* TIMER_CASE sets the Timeout value */        
@@ -276,6 +276,7 @@ int main(void)
                     UART_PutString(message);
                     state = START;
                 }
+                else
             break;
         }
     } 
